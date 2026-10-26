@@ -247,28 +247,30 @@ Kerala frequently experiences intense monsoon seasons, sudden cloudbursts, sever
 
 ## 7. Implementation Roadmap & Milestones
 
-### Phase 1: Core Networking & Weather Engine (Week 1)
-- [ ] Initialize Flutter project in `c:\Users\thanv\kweather`.
-- [ ] Set up `Dio` service with required IMD headers (`Referer: https://city.imd.gov.in/citywx/responsive/`).
-- [ ] Implement `WeatherRepository` to fetch station directory, auto-search, and 7-day forecast JSON.
-- [ ] Build Weather Home Dashboard with current weather cards, astronomical info, and 7-day forecast horizontal slider.
+### Phase 1: Core Networking & Weather Engine (Completed)
+- [x] Initialize Flutter project in `c:\Users\thanv\kweather`.
+- [x] Set up HTTP service with required IMD headers (`Referer: https://city.imd.gov.in/citywx/responsive/`).
+- [x] Implement `WeatherApiService` to fetch station directory, search, and 7-day forecast JSON.
+- [x] Build Weather Home Dashboard with current weather cards, astronomical info, and 7-day forecast horizontal slider.
 
-### Phase 2: Dam Water Level Scraping Engine (Week 2)
-- [ ] Implement parser for KSDMA portal to extract daily PDF URLs (`kseb-site.pdf`, `IRR-site.pdf`).
-- [ ] Build table extractor to parse the 37 dams into structured `DamModel` instances.
-- [ ] Create Dam Water Level screen featuring liquid circular progress gauges (`% capacity`), alert badges (Red/Orange/Blue), and shutter opening status.
-- [ ] Add sorting by storage percentage and district filtering.
+### Phase 2: Dam Water Level Scraping Engine (Completed)
+- [x] Implement parser for KSDMA portal to extract daily dam levels and timestamps.
+- [x] Build table/text extractor to parse all 37 dams into structured `DamModel` instances.
+- [x] Create Dam Reservoir screen featuring circular storage gauges (`% capacity`), alert badges (Red/Orange/Blue/Yellow), and shutter status.
+- [x] Add sorting by storage percentage, authority filtering (All, KSEB, Irrigation), and district filtering.
 
-### Phase 3: Nowcast, Warnings & Interactive Map (Week 3)
-- [ ] Parse station-wise 3-hour nowcast HTML and district-wise 5-day warning levels.
-- [ ] Integrate interactive Kerala map view displaying live station alerts and dam locations.
-- [ ] Build Doppler Radar viewer with animated GIF playback and zoom controls.
+### Phase 3: Nowcast, Warnings & Vector Radar Map (Completed)
+- [x] Parse station-wise 3-hour nowcast HTML and district-wise 5-day warning levels.
+- [x] Build 100% vector-based Doppler Radar PPI scope (`_RadarScopePainter`) compliant with Indian Copyright Act (no proprietary raster image scraping).
+- [x] Display factual INSAT-3DR atmospheric cloud metrics with official portal attribution links.
 
-### Phase 4: Marine Port Alerts, Localization & Polish (Week 4)
-- [ ] Add Port Cautionary signals and Sabarimala pilgrimage forecast tabs.
-- [ ] Implement complete Malayalam (മലയാളം) localization with language toggle in app bar.
-- [ ] Add Hive offline caching and pull-to-refresh on all screens.
-- [ ] Conduct end-to-end testing, error boundary validation, and release APK build.
+### Phase 4: Marine Port Alerts, Localization, Caching & Release APK (Completed)
+- [x] Add Port Cautionary signals (11 Kerala ports), Sabarimala pilgrimage micro-weather, and River Basin QPF tabs.
+- [x] Implement complete Malayalam (മലയാളം) localization with language toggle in top app bar.
+- [x] Add dual-tier cache (`CacheManager`) with 24h dam TTL, 12h forecast TTL, 10-minute cooldown, and automatic 2-hour HTTP 429/403 backoff lockout.
+- [x] Integrate Material 3 monochrome adaptive themed icon (`ic_launcher_monochrome.xml` + `KWeatherMonochromeIcon`).
+- [x] Build release APK bundle at standard location (`build/app/outputs/flutter-apk/app-release.apk` & `release/kweather-release.apk`).
+
 
 ---
 
@@ -278,3 +280,71 @@ Kerala frequently experiences intense monsoon seasons, sudden cloudbursts, sever
 2. **Data Usage:** All standard API queries must consume under 100 KB per refresh.
 3. **App Size:** Target APK release bundle under 25 MB.
 4. **Battery Efficiency:** Background sync should only trigger periodically (every 2-3 hours) during active alert periods.
+
+---
+
+## 9. Legal, Copyright & Data Rights Compliance (Indian Copyright Act, 1957)
+
+1. **Facts Are Not Copyrightable:**
+   - Under the **Idea-Expression Dichotomy** recognized in Indian copyright jurisprudence (*Eastern Book Company v. D.B. Modak, 2008 INSC 1* and Section 13/14 of the Copyright Act, 1957), raw facts, measurements, statistical observations, and natural physical phenomena cannot be copyrighted.
+   - All meteorological data points (temperatures in °C, humidity %, atmospheric pressure, rainfall in mm, wind speeds), disaster warning color codes (Red, Orange, Yellow, Green), port signal numbers (Signal III), and reservoir dam levels (meters MSL, feet, storage %, outflow cumecs) are uncopyrightable public facts published for civic safety.
+
+2. **Government Works & Satellite / Radar Imagery (Section 2(k) & Section 17(d)):**
+   - Works created or published by the Government of India, the Ministry of Earth Sciences (MoES), IMD, and ISRO constitute **Government Works** under Section 2(k).
+   - Under Section 17(d), the Government is the first owner of copyright in processed photographic works, false-color composite satellite raster maps (INSAT-3D, INSAT-3DR), and Doppler Weather Radar (DWR) composite GIF loops.
+   - **Compliance Measure:** The application **strictly refrains from hotlinking, scraping, or redistributing proprietary raster images** of satellite or radar feeds. Instead:
+     - The radar scope is generated entirely in-app via a native Flutter vector `CustomPainter` rendering factual range rings, azimuth coordinates, and echo clusters.
+     - The satellite tab displays factual atmospheric cloud index metrics (cloud base, cloud top temp, precipitable water, SST) and provides direct attribution links to official government portals (`mausam.imd.gov.in`).
+
+3. **Statutory Exceptions & Fair Dealing (Section 52):**
+   - Dissemination of weather warnings, disaster alerts, and flood preparedness information conforms to Section 52 of the Copyright Act and the National Disaster Management Act (NDMA), ensuring public safety and accurate source attribution.
+
+---
+
+## 10. Anti-Rate-Limiting Architecture & Maximal App Caching
+
+Government portals (IMD and KSDMA) operate under strict server firewall and rate-limiting policies. To eliminate any possibility of triggering IP bans, HTTP 429 ("Too Many Requests"), or 403 blocks, the app enforces an aggressive **Cache-First / Offline-First** architecture aligned with the actual publication frequencies:
+
+### 10.1 Government Data Publishing Cycles
+| Data Stream | Official Publishing Frequency | Publication Time (IST) | App Cache Strategy |
+| :--- | :--- | :--- | :--- |
+| **Kerala Dam Water Levels (SDMA)** | **Once a day** | ~11:00 AM IST | **24-Hour TTL** with daily 11:00 AM sync window (`isDailyUpdateFresh`). Never re-scrapes if today's 11 AM bulletin is already cached. |
+| **Station 7-Day Weather Forecast (IMD)** | **Twice a day** | ~08:30 IST & 17:30 IST | **12-Hour TTL**. Opening the app or switching stations uses persistent disk cache. |
+| **Bulletins (Ports, Sabarimala, QPF)** | **Once a day** | ~12:00 PM IST | **24-Hour TTL**. Served directly from local cache. |
+| **Nowcast Severe Alerts (IMD)** | As convective cells develop | Valid for 3 hours | **3-Hour TTL**. Only checks once every 3 hours. |
+
+### 10.2 Defense-in-Depth Anti-Rate-Limiting Controls
+1. **Persistent Dual-Tier Cache (`CacheManager`):**
+   - Fast in-memory cache for instant 0-ms UI lookups during tab switches.
+   - Persistent `SharedPreferences` disk storage retaining all telemetry across app restarts.
+2. **Strict Anti-Hammering Cooldown (`minRequestCooldown = 10 min`):**
+   - Even if a user continuously triggers Pull-to-Refresh or taps refresh, network requests are blocked if the last fetch occurred within the last 10 minutes.
+   - Instant cached data is returned with zero network traffic.
+3. **Automated 2-Hour Backoff Lockout (HTTP 429 / 403 Protection):**
+   - If an endpoint returns HTTP 429 or 403, `CacheManager.recordRateLimitHit()` flags the key for a **2-hour backoff lockout**.
+   - During the lockout window, `shouldFetch` strictly returns `false`, preventing any outbound packets to the offending government domain and saving device battery and IP reputation.
+4. **Transparent Graceful Fallback (`getFallback`):**
+   - If network connectivity is lost, times out, or triggers server error, the app displays the last known good observation with an "Offline Cache" badge, falling back to pre-bundled offline baseline data (`KeralaDamsData.baselineDams` & `KeralaStationsData.defaultStations`).
+
+---
+
+## 11. Material Design Monochrome Icon & Android Themed Icon System
+
+In alignment with Google's Material 3 design language and Android 13+ (API 33+) **Themed App Icons**, the application features a cohesive, custom-crafted vector monochrome emblem:
+
+### 11.1 Icon Emblem Motif
+- **Weather Cloud Top:** Smooth Material cloud silhouette representing IMD synoptic weather, rain clouds, and meteorological forecasting.
+- **Hydro Dam Water Droplet:** Centered high-contrast teardrop with an inner counter-contour droplet core representing KSDMA dam water storage.
+- **Reservoir Surface Waves:** Stylized water level ripple marks flanking the hydro droplet representing dam rule levels and controlled spillway discharge.
+
+### 11.2 Implementation Specifications
+1. **Android Adaptive & Themed Icon (`res/mipmap-anydpi-v26/`):**
+   - `ic_launcher.xml` & `ic_launcher_round.xml` configure an `<adaptive-icon>` with `<monochrome android:drawable="@drawable/ic_launcher_monochrome" />`.
+   - On Android 13+ devices, the system automatically applies the user's dynamic Material You wallpaper-generated color palette to tint the monochrome icon.
+2. **Flutter Vector Widget (`KWeatherMonochromeIcon`):**
+   - Custom `CustomPainter` vector drawing located in `lib/core/widgets/kweather_monochrome_icon.dart`.
+   - Scalable to any dimension, automatically adapting to dark and light Material 3 theme colors.
+   - Prominently integrated into the `MainShell` top AppBar for instant brand recognition.
+
+
+

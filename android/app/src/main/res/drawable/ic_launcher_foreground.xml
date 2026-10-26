@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="18"
+        android:translateY="18"
+        android:scaleX="3.0"
+        android:scaleY="3.0">
+        <!-- Weather Cloud Top (High-contrast pure white) -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M 19.35,7.04 C 18.67,4.59 16.34,3.0 13.5,3.0 C 11.11,3.0 9.0,4.24 7.85,6.14 C 5.34,6.46 3.0,8.71 3.0,11.5 C 3.0,14.54 5.46,17.0 8.5,17.0 L 19.0,17.0 C 21.76,17.0 24.0,14.76 24.0,12.0 C 24.0,9.36 21.95,7.22 19.35,7.04 Z" />
+        <!-- Hydro Dam Water Drop (Material cyan accent) -->
+        <path
+            android:fillColor="#00D2FF"
+            android:pathData="M 12.0,11.0 C 12.0,11.0 7.0,16.2 7.0,19.2 C 7.0,21.96 9.24,24.0 12.0,24.0 C 14.76,24.0 17.0,21.96 17.0,19.2 C 17.0,16.2 12.0,11.0 12.0,11.0 Z M 12.0,22.2 C 10.35,22.2 9.0,20.85 9.0,19.2 C 9.0,17.5 10.8,14.8 12.0,13.2 C 13.2,14.8 15.0,17.5 15.0,19.2 C 15.0,20.85 13.65,22.2 12.0,22.2 Z" />
+        <!-- Reservoir Dam Wave Lines -->
+        <path
+            android:fillColor="#00D2FF"
+            android:pathData="M 4.0,20.0 C 5.0,19.0 6.0,19.0 7.0,20.0 C 8.0,21.0 9.0,21.0 10.0,20.0 L 10.0,21.5 C 8.5,22.5 7.5,22.5 6.0,21.5 C 5.0,21.0 4.5,21.0 4.0,21.5 Z M 14.0,20.0 C 15.0,19.0 16.0,19.0 17.0,20.0 C 18.0,21.0 19.0,21.0 20.0,20.0 L 20.0,21.5 C 18.5,22.5 17.5,22.5 16.0,21.5 C 15.0,21.0 14.5,21.0 14.0,21.5 Z" />
+    </group>
+</vector>
