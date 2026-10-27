@@ -113,7 +113,7 @@ class BulletinsScreen extends ConsumerWidget {
               isMalayalam ? 'കേരള തുറമുഖ സിഗ്നലുകൾ (11 എണ്ണം)' : 'Kerala Coastal Ports (11 Ports)',
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.onSurface),
             ),
-            const Text('IMD Port Signal III', style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.w600)),
+            Text(isMalayalam ? 'പോർട്ട് സിഗ്നൽ' : 'Coastal Signal III', style: const TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.w600)),
           ],
         ),
         const SizedBox(height: 10),

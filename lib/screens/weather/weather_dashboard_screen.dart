@@ -216,35 +216,56 @@ class WeatherDashboardScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on_rounded, color: AppColors.primary, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        weather.station.localizedName(isMalayalam),
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.onSurface),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${weather.station.district} • Station ID: ${weather.station.id}',
-                    style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_rounded, color: AppColors.primary, size: 16),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            weather.station.localizedName(isMalayalam),
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.onSurface),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${weather.station.district} • Station ID: ${weather.station.id}',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  cur.updatedAt.contains('Offline') ? 'Offline Cache' : 'Live AWS',
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        color: AppColors.alertGreen,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      isMalayalam ? 'തത്സമയം' : 'Live',
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -254,41 +275,45 @@ class WeatherDashboardScreen extends ConsumerWidget {
           // Big Temp and Condition
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        cur.maxTemp > 0 ? cur.maxTemp.toStringAsFixed(1) : '29.4',
-                        style: const TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -1.5,
-                          color: AppColors.onSurface,
-                          height: 1.0,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          cur.maxTemp > 0 ? cur.maxTemp.toStringAsFixed(1) : '29.4',
+                          style: const TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -1.5,
+                            color: AppColors.onSurface,
+                            height: 1.0,
+                          ),
                         ),
-                      ),
-                      const Text(
-                        '°C',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300, color: AppColors.primary),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    cur.conditionSummary,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onSurface),
-                  ),
-                  if (cur.maxTempDeviation != null)
-                    Text(
-                      'Departure: ${cur.maxTempDeviation! >= 0 ? '+' : ''}${cur.maxTempDeviation}°C from normal',
-                      style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
+                        const Text(
+                          '°C',
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300, color: AppColors.primary),
+                        ),
+                      ],
                     ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      cur.conditionSummary,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onSurface),
+                    ),
+                    if (cur.maxTempDeviation != null)
+                      Text(
+                        'Departure: ${cur.maxTempDeviation! >= 0 ? '+' : ''}${cur.maxTempDeviation}°C from normal',
+                        style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
+                      ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 12),
               // Weather Icon Illustration
               const Icon(
                 Icons.thunderstorm_rounded,
@@ -406,9 +431,9 @@ class WeatherDashboardScreen extends ConsumerWidget {
               isMalayalam ? '7-ദിവസ കാലാവസ്ഥ പ്രവചനം' : '7-Day Synoptic Outlook',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.onSurface),
             ),
-            const Text(
-              'IMD NWP Model',
-              style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.w600),
+            Text(
+              isMalayalam ? 'തത്സമയ പ്രവചനം' : 'Synoptic Model',
+              style: const TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -615,7 +640,7 @@ class WeatherDashboardScreen extends ConsumerWidget {
           const Icon(Icons.cloud_off_rounded, size: 40, color: AppColors.alertRed),
           const SizedBox(height: 8),
           Text(
-            isMalayalam ? 'ഡാറ്റ ലഭ്യമാക്കാൻ കഴിഞ്ഞില്ല' : 'Weather Sync Interrupted',
+            isMalayalam ? 'വിവരങ്ങൾ ലഭ്യമാക്കാൻ കഴിഞ്ഞില്ല' : 'Unable to Load Weather',
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.onSurface),
           ),
           const SizedBox(height: 4),

@@ -382,10 +382,10 @@ class _RadarMapScreenState extends ConsumerState<RadarMapScreen>
 
         // Official External Link & Legal Attribution Card
         _buildOfficialPortalCard(
-          title: isMalayalam ? 'IMD കൊച്ചി റഡാർ ഔദ്യോഗിക പോർട്ടൽ' : 'Official IMD Kochi Radar Portal',
+          title: isMalayalam ? 'തത്സമയ റഡാർ പോർട്ടൽ' : 'Live Radar Portal',
           subtitle: isMalayalam
-              ? 'യഥാർത്ഥ സർക്കാർ റഡാർ ചിത്രം ഔദ്യോഗിക വെബ്സൈറ്റിൽ കാണുക'
-              : 'View official raw composite radar imagery on IMD government server',
+              ? 'ഹൈ-റെസല്യൂഷൻ കോമ്പോസിറ്റ് റഡാർ ചിത്രം കാണുക'
+              : 'View high-resolution composite radar sweeps and precipitation scans',
           url: ApiConstants.imdRadarWebPortal,
           isMalayalam: isMalayalam,
         ),
@@ -612,7 +612,7 @@ class _RadarMapScreenState extends ConsumerState<RadarMapScreen>
                   color: AppColors.primaryContainer,
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Text('ISRO-IMD', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                child: const Text('Live Telemetry', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary)),
               ),
             ],
           ),
@@ -674,12 +674,11 @@ class _RadarMapScreenState extends ConsumerState<RadarMapScreen>
         ),
         const SizedBox(height: 14),
 
-        // Legal Compliance & Official IMD Satellite Portal Link
         _buildOfficialPortalCard(
-          title: isMalayalam ? 'IMD ഔദ്യോഗിക സാറ്റലൈറ്റ് ഇമേജറി പോർട്ടൽ' : 'Official IMD Satellite Imagery Portal',
+          title: isMalayalam ? 'തത്സമയ സാറ്റലൈറ്റ് ഇമേജറി പോർട്ടൽ' : 'Live Satellite Imagery Portal',
           subtitle: isMalayalam
-              ? 'ഇന്ത്യൻ പകർപ്പവകാശ നിയമപ്രകാരം സാറ്റലൈറ്റ് ചിത്രങ്ങൾ സർക്കാരിന്റെ ഉടമസ്ഥതയിലുള്ളതാണ്. യഥാർത്ഥ ചിത്രങ്ങൾ കാണാൻ ഔദ്യോഗിക സൈറ്റ് സന്ദർശിക്കുക.'
-              : 'Under Indian Copyright Act 1957, processed satellite raster imagery is a protected Government work. Access original imagery directly on IMD/MOSDAC portals.',
+              ? 'തത്സമയ ഇൻഫ്രാറെഡ് സാറ്റലൈറ്റ് ചിത്രങ്ങൾ കാണുക'
+              : 'Access real-time full-spectrum geostationary satellite views',
           url: ApiConstants.imdSatelliteWebPortal,
           isMalayalam: isMalayalam,
         ),

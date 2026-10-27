@@ -84,7 +84,7 @@ class DamReservoirScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  isMalayalam ? '37 പ്രധാന അണക്കെട്ടുകൾ • KSDMA ലൈവ്' : '37 Major Dams (17 KSEB + 20 Irrigation)',
+                  isMalayalam ? '37 പ്രധാന അണക്കെട്ടുകൾ • തത്സമയം' : '37 Major Water Reservoirs',
                   style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
                 ),
                 const SizedBox(height: 10),
@@ -96,11 +96,11 @@ class DamReservoirScreen extends ConsumerWidget {
                         color: AppColors.primaryContainer,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Text('11:00 AM Sync', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                      child: Text(isMalayalam ? 'തത്സമയം' : 'Live Status', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary)),
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      isMalayalam ? 'ജലസേചനം & കെ.എസ്.ഇ.ബി' : 'Live Telemetry Active',
+                      isMalayalam ? 'ജലവൈദ്യുതി & ജലസേചനം' : 'Hydroelectric & Irrigation',
                       style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
                     ),
                   ],
@@ -152,7 +152,7 @@ class DamReservoirScreen extends ConsumerWidget {
       child: Row(
         children: [
           _buildAuthorityTabItem(ref, DamAuthority.all, isMalayalam ? 'എല്ലാം (37)' : 'All Dams (37)', selected == DamAuthority.all),
-          _buildAuthorityTabItem(ref, DamAuthority.kseb, isMalayalam ? 'കെ.എസ്.ഇ.ബി (17)' : 'KSEB Hydro (17)', selected == DamAuthority.kseb),
+          _buildAuthorityTabItem(ref, DamAuthority.kseb, isMalayalam ? 'ജലവൈദ്യുതി (17)' : 'Hydroelectric (17)', selected == DamAuthority.kseb),
           _buildAuthorityTabItem(ref, DamAuthority.irrigation, isMalayalam ? 'ജലസേചനം (20)' : 'Irrigation (20)', selected == DamAuthority.irrigation),
         ],
       ),
