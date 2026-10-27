@@ -57,6 +57,19 @@ class AppTheme {
         selectedLabelStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
         unselectedLabelStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
       ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: const Color(0xFF0C1D33),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: Color(0xFF254B78), width: 1.2),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 }

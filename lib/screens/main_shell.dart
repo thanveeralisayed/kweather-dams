@@ -7,8 +7,9 @@ import 'dams/dam_reservoir_screen.dart';
 import 'radar/radar_map_screen.dart';
 import 'bulletins/bulletins_screen.dart';
 import 'search/station_search_modal.dart';
-import 'common/offline_fallback_sheet.dart';
 import '../core/widgets/kweather_monochrome_icon.dart';
+import '../features/weather/providers/weather_providers.dart';
+import '../features/dams/providers/dam_providers.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   const MainShell({super.key});
@@ -42,55 +43,88 @@ class _MainShellState extends ConsumerState<MainShell> {
 
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 16,
+        titleSpacing: 12,
         title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Material monochrome app logo badge
             const KWeatherMonochromeIcon(
-              size: 22,
+              size: 20,
               withBackground: true,
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'K-Weather & Dams',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.onSurface),
-                      ),
-                      const SizedBox(width: 6),
-                      // Live dot
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: AppColors.alertGreen,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    isMalayalam ? 'കേരള കാലാവസ്ഥ & അണക്കെട്ടുകൾ' : 'IMD • KSDMA Verified Live',
-                    style: const TextStyle(fontSize: 10, color: AppColors.onSurfaceVariant),
-                  ),
-                ],
+            const SizedBox(width: 8),
+            const Text(
+              'K-Weather & Dams',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: AppColors.onSurface,
+                letterSpacing: -0.2,
+              ),
+            ),
+            const SizedBox(width: 5),
+            // Live dot
+            Container(
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(
+                color: AppColors.alertGreen,
+                shape: BoxShape.circle,
               ),
             ),
           ],
         ),
         actions: [
-          // Sync / Offline Diagnostics Button
+          // Refresh Button
           IconButton(
-            icon: const Icon(Icons.sync_rounded, color: AppColors.onSurfaceVariant),
-            tooltip: 'Sync & Offline Diagnostics',
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            padding: const EdgeInsets.all(7),
+            icon: const Icon(Icons.sync_rounded, color: AppColors.onSurfaceVariant, size: 20),
+            tooltip: 'Refresh',
             onPressed: () {
-              OfflineFallbackSheet.show(context, isMalayalam: isMalayalam);
+              ref.invalidate(stationWeatherProvider);
+              ref.invalidate(nowcastAlertsProvider);
+              ref.invalidate(allDamsFutureProvider);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    side: BorderSide(color: AppColors.primary.withValues(alpha: 0.4), width: 1.2),
+                  ),
+                  backgroundColor: const Color(0xFF0C1D33),
+                  duration: const Duration(seconds: 2),
+                  content: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          isMalayalam ? 'വിവരങ്ങൾ പുതുക്കുന്നു...' : 'Updating latest data...',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
           ),
+          const SizedBox(width: 2),
 
           // Language Toggle Chip
           GestureDetector(
@@ -98,10 +132,10 @@ class _MainShellState extends ConsumerState<MainShell> {
               ref.read(appSettingsProvider.notifier).toggleLanguage();
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: AppColors.outline),
               ),
               child: Text(
@@ -110,17 +144,19 @@ class _MainShellState extends ConsumerState<MainShell> {
               ),
             ),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 2),
 
           // Station Search Button
           IconButton(
-            icon: const Icon(Icons.search_rounded, color: AppColors.onSurfaceVariant),
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            padding: const EdgeInsets.all(7),
+            icon: const Icon(Icons.search_rounded, color: AppColors.onSurfaceVariant, size: 20),
             tooltip: 'Search Stations',
             onPressed: () {
               StationSearchModal.show(context);
             },
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
         ],
       ),
       body: IndexedStack(
